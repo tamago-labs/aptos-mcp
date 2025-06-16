@@ -85,7 +85,7 @@ The agent assists DeFi protocol managers and power users with:
 | `aptos_burn_token` | Burn tokens from your account | "Burn 100 MTK tokens" |
 | `aptos_get_token_price` | Get token price | "What's the current price of APT?" |
 
-### Enhanced Liquidswap DEX Operations
+### Liquidswap DEX Operations
 | Tool Name | Description | Example Usage |
 |-----------|-------------|---------------|
 | `aptos_swap_tokens` | Swap tokens via Liquidswap | "Swap 10 APT for USDC" |
