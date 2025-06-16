@@ -2,16 +2,17 @@
 
 ![NPM Version](https://img.shields.io/npm/v/@tamago-labs/aptos-mcp)
 
-**Aptos MCP** is a Model Context Protocol (MCP) server implementation for the Aptos blockchain, compatible with MCP clients like Claude Desktop or Cursor.ai. It allows managing wallet operations and smart contract flows through the Aptos CLI.
+**Aptos MCP** is a comprehensive Model Context Protocol (MCP) server implementation for the Aptos blockchain, compatible with MCP clients like Claude Desktop or Cursor.ai. It provides a complete DeFi toolkit covering major Aptos protocols including lending, DEX operations, liquid staking, and smart contract development through the Aptos CLI.
 
 ## Features
 
-- 30+ MCP tools covering account management, smart contract development, staking, token operations and DeFi integrations
-- Token swaps on Mainnet via the Liquidswap DEX
-- Native APT staking with validator insights from AI
-- Aptos CLI integration for Move smart contract development and testing
-- Real-time token price data integration
-- Comprehensive account and resource management
+- **40+ MCP tools** covering the complete Aptos DeFi ecosystem
+- **Complete DEX integration** - Liquidswap with swapping, liquidity management, and pool creation
+- **Professional lending protocols** - Joule Finance with full lending/borrowing workflow
+- **Liquid staking options** - Thala Finance and Amnis Finance integrations
+- **Stablecoin operations** - MOD minting and redemption through Thala
+- **Native APT staking** with validator insights from AI
+- **Comprehensive CLI integration** for Move smart contract development and testing
 
 ## Using with Claude Desktop
 
@@ -40,31 +41,36 @@ This Private Key mode is recommended for advanced users who can securely manage 
 
 ## Use Cases
 
-### 1. DeFi Portfolio Management 
-The agent connects to price oracles and external sources to help you:
+### 1. Complete DeFi Portfolio Management 
+The agent connects to price oracles and major DeFi protocols to help you:
 
-- Monitor real-time cryptocurrency prices across multiple assets
-- Compare prices across different platforms for optimal trading opportunities
-- Execute token swaps via Liquidswap DEX
-- Manage APT staking positions with validator analytics
+- **Monitor and analyze** real-time cryptocurrency prices across multiple assets
+- **Execute complex DeFi strategies** across lending, borrowing, and liquidity provision
+- **Manage liquid staking positions** with Thala and Amnis protocols
+- **Trade and provide liquidity** on Liquidswap DEX with advanced pool management
+- **Track lending positions** across Joule Finance with automated reward claiming
+- **Mint and manage stablecoins** through Thala's MOD protocol
 
 ### 2. Smart Contract Development & Testing Assistance
 The agent integrates with the Aptos CLI to help developers:
-- Analyze existing Move code and suggest improvements
-- Generate comprehensive test cases for smart contracts
-- Publish and upgrade packages directly through AI conversation
-- Initialize new Move projects with best practices
+- **Analyze existing Move code** and suggest improvements
+- **Generate comprehensive test cases** for smart contracts
+- **Publish and upgrade packages** directly through AI conversation
+- **Initialize new Move projects** with best practices
+- **Formal verification** and code proving capabilities
 
-### 3. Protocol Governance & Parameter Management
-The agent assists DeFi protocol managers with:
+### 3. Advanced DeFi Protocol Management
+The agent assists DeFi protocol managers and power users with:
 
-- Checking external sources to determine optimal parameters based on current market conditions
-- For example, in collateralization protocols, the agent can analyze asset prices to suggest better collateral ratio settings for smart contracts
-- Then propose new governance parameters through AI conversations
+- **Multi-protocol position management** across lending platforms
+- **Liquidity optimization** strategies across different DEX pools
+- **Yield farming** and reward optimization across protocols
+- **Risk management** through diversified staking and lending
+- **Parameter optimization** based on real-time market conditions
 
 ## Available Tools
 
-### Wallet Operations
+### Core Wallet Operations
 | Tool Name | Description | Example Usage |
 |-----------|-------------|---------------|
 | `aptos_get_address` | Retrieve your wallet address | "What's my wallet address?" |
@@ -77,19 +83,40 @@ The agent assists DeFi protocol managers with:
 | `aptos_create_token` | Create a new token on Aptos | "Create a token named MyToken with symbol MTK" |
 | `aptos_mint_token` | Mint tokens to an address | "Mint 1000 MTK tokens to 0x456..." |
 | `aptos_burn_token` | Burn tokens from your account | "Burn 100 MTK tokens" |
-| `aptos_get_token_details` | Get token information | "Get details for token 0x123..." |
 | `aptos_get_token_price` | Get token price | "What's the current price of APT?" |
 
-### Staking Operations
+### Enhanced Liquidswap DEX Operations
+| Tool Name | Description | Example Usage |
+|-----------|-------------|---------------|
+| `aptos_swap_tokens` | Swap tokens via Liquidswap | "Swap 10 APT for USDC" |
+| `aptos_add_liquidity` | Add liquidity to earn fees | "Add 100 APT and 500 USDC to the pool" |
+| `aptos_remove_liquidity` | Remove liquidity from pools | "Remove 50 LP tokens from APT/USDC pool" |
+| `aptos_create_pool` | Create new trading pools | "Create a new pool for APT/USDT trading" |
+
+### Joule Finance - Complete Lending Protocol
+| Tool Name | Description | Example Usage |
+|-----------|-------------|---------------|
+| `aptos_joule_lend` | Lend tokens to earn interest | "Lend 100 APT to Joule Finance" |
+| `aptos_joule_borrow` | Borrow tokens against collateral | "Borrow 50 USDC using my APT collateral" |
+| `aptos_joule_repay` | Repay borrowed tokens | "Repay 25 USDC to my lending position" |
+| `aptos_joule_withdraw` | Withdraw lent tokens | "Withdraw 50 APT from my lending position" |
+| `aptos_joule_get_position` | Get specific position details | "Show details for position pos_123" |
+| `aptos_joule_get_all_positions` | Get all lending positions | "Show all my Joule Finance positions" |
+| `aptos_joule_claim_reward` | Claim lending rewards | "Claim rewards from my lending positions" |
+
+### Thala Finance - Liquid Staking & Stablecoin
+| Tool Name | Description | Example Usage |
+|-----------|-------------|---------------|
+| `aptos_thala_stake` | Stake APT for thAPT (liquid staking) | "Stake 200 APT with Thala for thAPT" |
+| `aptos_thala_unstake` | Unstake thAPT back to APT | "Unstake 100 thAPT tokens" |
+| `aptos_thala_mint_mod` | Mint MOD stablecoin | "Mint 150 MOD using thAPT as collateral" |
+| `aptos_thala_redeem_mod` | Redeem MOD for collateral | "Redeem 75 MOD tokens for thAPT" |
+
+### Native Staking Operations
 | Tool Name | Description | Example Usage |
 |-----------|-------------|---------------|
 | `aptos_stake_apt` | Stake APT with a validator | "Stake 100 APT with validator 0x123..." |
 | `aptos_unstake_apt` | Unstake APT from a validator | "Unstake 50 APT from validator 0x123..." |
-
-### DeFi Operations
-| Tool Name | Description | Example Usage |
-|-----------|-------------|---------------|
-| `aptos_swap_tokens` | Swap tokens via Liquidswap | "Swap 10 APT for USDC" |
 
 ### Transaction Management
 | Tool Name | Description | Example Usage |
@@ -101,13 +128,11 @@ The agent assists DeFi protocol managers with:
 #### Account Management
 | Tool Name | Description | Example Usage |
 |-----------|-------------|---------------|
-| `aptos_cli_create_account` | Create a new Aptos account | "Create a new account with name 'myaccount'" |
-| `aptos_cli_fund_account` | Fund account with test APT | "Fund account 0x123... with 10 APT" |
+| `aptos_cli_create_account` | Create a new Aptos account | "Create a new account with name 'myaccount'" | 
 | `aptos_cli_get_account_info` | Get account information | "Get info for account 0x123..." |
 | `aptos_cli_list_accounts` | List all configured accounts | "Show all my accounts" |
 | `aptos_cli_get_account_resources` | Get account resources | "Show resources for account 0x123..." |
 | `aptos_cli_get_account_modules` | Get published modules | "Show modules published by 0x123..." |
-| `aptos_cli_transfer_apt` | Transfer APT using CLI | "Transfer 5 APT to 0x456... via CLI" |
 
 #### Move Package Management
 | Tool Name | Description | Example Usage |
@@ -146,16 +171,40 @@ The agent assists DeFi protocol managers with:
 
 ## Example Interactions
 
-### Basic Wallet Operations
+### Advanced DeFi Portfolio Management
 ```
-User: "What's my wallet address and APT balance?"
-Agent: Uses aptos_get_address and aptos_get_balance tools to show current wallet info
+User: "Help me optimize my DeFi portfolio: Check my balances, stake some APT with Thala, 
+       lend the rest to Joule Finance, and add liquidity to the APT/USDC pool"
+
+Agent: 
+1. Uses aptos_get_balance to check current holdings
+2. Uses aptos_thala_stake to stake 50% of APT for thAPT
+3. Uses aptos_joule_lend to lend remaining APT for yield
+4. Uses aptos_add_liquidity to provide liquidity on Liquidswap
+5. Shows portfolio summary with expected yields
 ```
 
-### DeFi Operations
+### Complete Lending Workflow
 ```
-User: "Swap 10 APT for USDC and show me the transaction"
-Agent: Uses aptos_swap_tokens to execute swap, then aptos_get_transaction to show details
+User: "I want to use my APT as collateral to borrow USDC, then track my position"
+
+Agent:
+1. Uses aptos_joule_lend to deposit APT as collateral
+2. Uses aptos_joule_borrow to borrow USDC against collateral
+3. Uses aptos_joule_get_position to show health ratio and details
+4. Sets up monitoring for liquidation risk
+```
+
+### Advanced Liquidswap Operations
+```
+User: "Create a new trading pool for my token, add initial liquidity, 
+       then show me the pool statistics"
+
+Agent:
+1. Uses aptos_create_pool to create the trading pair
+2. Uses aptos_add_liquidity to provide initial liquidity
+3. Shows pool statistics and fee earning potential
+4. Provides ongoing pool management recommendations
 ```
 
 ### Move Development Workflow
@@ -170,11 +219,41 @@ User: "Deploy to testnet with named address myaddr=0x123..."
 Agent: Uses aptos_cli_move_publish with proper configuration
 ```
 
-### Staking Management
+### Comprehensive Staking Strategy
 ```
-User: "Stake 100 APT with the best validator"
-Agent: Uses aptos_stake_apt to stake with optimal validator selection
+User: "What are the best staking options for my 1000 APT?"
+
+Agent:
+1. Compares native staking vs liquid staking options
+2. Shows yields for Thala liquid staking vs native validators
+3. Recommends diversified approach using multiple protocols
+4. Executes chosen strategy across different platforms
 ```
+
+## Protocol Integrations
+
+### Liquidswap DEX
+- **Complete trading functionality** with optimal routing
+- **Advanced liquidity management** with fee optimization
+- **Pool creation and management** for new trading pairs
+- **Real-time price monitoring** and arbitrage detection
+
+### Joule Finance
+- **Professional lending platform** with competitive rates
+- **Multi-asset collateral support** for borrowing
+- **Automated reward claiming** and compound strategies
+- **Risk management** with health ratio monitoring
+
+### Thala Finance
+- **Liquid staking** - Keep liquidity while earning staking rewards
+- **MOD stablecoin** - Collateralized debt position management
+- **Yield optimization** through liquid staking derivatives
+- **Advanced DeFi composability** with other protocols
+
+### Native Aptos Staking
+- **Validator selection** with AI-driven recommendations
+- **Staking optimization** based on performance metrics
+- **Automated management** of staking positions
 
 ## Troubleshooting
 
