@@ -15,8 +15,7 @@ import { getBalance } from "../tools/aptos/balance";
 import { transferTokens } from "../tools/aptos/transfer-token";
 import { createToken } from "../tools/aptos/create-token";
 import { mintToken } from "../tools/aptos/mint-token";
-import { burnToken } from "../tools/aptos/burn-token";
-import { getTokenDetails } from "../tools/aptos/get-token-details";
+import { burnToken } from "../tools/aptos/burn-token"; 
 import { getTokenPrice } from "../tools/aptos/get-token-price";
 import { getTransaction } from "../tools/aptos/get-transaction";
 import { swapTokens } from "../tools/liquidswap/swap";
@@ -160,10 +159,7 @@ export class AptosAgent {
             success: true
         };
     }
-
-    async getTokenDetails(tokenAddress: string): Promise<TokenInfo> {
-        return getTokenDetails(tokenAddress);
-    }
+ 
 
     async getTokenPrice(query: string): Promise<{ price: number; symbol: string }> {
         return getTokenPrice(query);

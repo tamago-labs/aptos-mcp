@@ -14,20 +14,6 @@ export const createAccount = async (accountName?: string) => {
 };
 
 /**
- * Fund an account with test APT (testnet/devnet only)
- * @param accountAddress Account address to fund
- * @param amount Amount of APT to fund (default: 100000000 = 1 APT)
- * @returns Result of the funding operation
- */
-export const fundAccount = async (accountAddress: string, amount?: number) => {
-  const args = ['fund', '--account', accountAddress];
-  if (amount) {
-    args.push('--amount', amount.toString());
-  }
-  return executeAptosCommand('account', args);
-};
-
-/**
  * Get account information
  * @param accountAddress Account address to query
  * @returns Account information including sequence number, authentication key, etc.

@@ -3,8 +3,7 @@ import { GetAddressTool } from "./aptos/get-address-tool";
 import { TransferTokenTool } from "./aptos/transfer-token-tool";
 import { CreateTokenTool } from "./aptos/create-token-tool";
 import { MintTokenTool } from "./aptos/mint-token-tool";
-import { BurnTokenTool } from "./aptos/burn-token-tool";
-import { GetTokenDetailsTool } from "./aptos/get-token-details-tool";
+import { BurnTokenTool } from "./aptos/burn-token-tool"; 
 import { GetTokenPriceTool } from "./aptos/get-token-price-tool";
 import { GetTransactionTool } from "./aptos/get-transaction-tool";
 import { SwapTokensTool } from "./liquidswap/swap-tokens-tool";
@@ -34,8 +33,7 @@ export const AptosMcpTools = {
     "TransferTokenTool": TransferTokenTool,
     "CreateTokenTool": CreateTokenTool,
     "MintTokenTool": MintTokenTool,
-    "BurnTokenTool": BurnTokenTool,
-    "GetTokenDetailsTool": GetTokenDetailsTool,
+    "BurnTokenTool": BurnTokenTool, 
     "GetTokenPriceTool": GetTokenPriceTool,
     "GetTransactionTool": GetTransactionTool,
     

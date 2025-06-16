@@ -1,11 +1,9 @@
 import {
-  CreateAccountTool,
-  FundAccountTool,
+  CreateAccountTool, 
   GetAccountInfoTool,
   ListAccountsTool,
   GetAccountResourcesTool,
-  GetAccountModulesTool,
-  TransferAPTTool
+  GetAccountModulesTool
 } from './account-tools';
 
 import {
@@ -42,13 +40,11 @@ import {
 
 export const AptosCliTools = {
   // Account Management
-  "CreateAccountTool": CreateAccountTool,
-  "FundAccountTool": FundAccountTool,
+  "CreateAccountTool": CreateAccountTool, 
   "GetAccountInfoTool": GetAccountInfoTool,
   "ListAccountsTool": ListAccountsTool,
   "GetAccountResourcesTool": GetAccountResourcesTool,
   "GetAccountModulesTool": GetAccountModulesTool,
-  "TransferAPTTool": TransferAPTTool,
 
   // Move Package Management
   "InitMovePackageTool": InitMovePackageTool,

@@ -2,13 +2,11 @@ import { z } from "zod";
 import { AptosAgent } from "../../agent";
 import { McpTool } from "../../types";
 import { 
-  createAccount, 
-  fundAccount, 
+  createAccount,  
   getAccountInfo, 
   listAccounts, 
   getAccountResources,
-  getAccountModules,
-  transferAPT
+  getAccountModules
 } from "../../tools/cli/account";
 
 export const CreateAccountTool: McpTool = {
@@ -34,31 +32,7 @@ export const CreateAccountTool: McpTool = {
     };
   },
 };
-
-export const FundAccountTool: McpTool = {
-  name: "aptos_cli_fund_account",
-  description: "Fund an account with test APT (testnet/devnet only)",
-  schema: {
-    accountAddress: z.string().describe("Account address to fund"),
-    amount: z.number().optional().describe("Amount of APT to fund (default: 100000000 = 1 APT)")
-  },
-  handler: async (agent: AptosAgent, input: Record<string, any>) => {
-    const result = await fundAccount(input.accountAddress, input.amount);
-    
-    if (!result.success) {
-      return {
-        status: "error",
-        message: result.stderr
-      };
-    }
-    
-    return {
-      status: "success",
-      output: result.stdout,
-      parsed: result.parsed
-    };
-  },
-};
+ 
 
 export const GetAccountInfoTool: McpTool = {
   name: "aptos_cli_get_account_info",
@@ -153,29 +127,4 @@ export const GetAccountModulesTool: McpTool = {
     };
   },
 };
-
-export const TransferAPTTool: McpTool = {
-  name: "aptos_cli_transfer_apt",
-  description: "Transfer APT between accounts using CLI",
-  schema: {
-    toAddress: z.string().describe("Recipient address"),
-    amount: z.number().positive().describe("Amount to transfer (in Octas, 1 APT = 100,000,000 Octas)"),
-    fromAccount: z.string().optional().describe("Sender account name (uses default if not specified)")
-  },
-  handler: async (agent: AptosAgent, input: Record<string, any>) => {
-    const result = await transferAPT(input.toAddress, input.amount, input.fromAccount);
-    
-    if (!result.success) {
-      return {
-        status: "error",
-        message: result.stderr
-      };
-    }
-    
-    return {
-      status: "success",
-      output: result.stdout,
-      parsed: result.parsed
-    };
-  },
-};
+ 
