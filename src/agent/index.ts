@@ -20,7 +20,21 @@ import { getTokenDetails } from "../tools/aptos/get-token-details";
 import { getTokenPrice } from "../tools/aptos/get-token-price";
 import { getTransaction } from "../tools/aptos/get-transaction";
 import { swapTokens } from "../tools/liquidswap/swap";
+import { addLiquidity } from "../tools/liquidswap/add-liquidity";
+import { removeLiquidity } from "../tools/liquidswap/remove-liquidity";
+import { createPool } from "../tools/liquidswap/create-pool";
 import { stakeAPT, unstakeAPT } from "../tools/staking/stake";
+import { lendToken } from "../tools/joule/lend";
+import { borrowToken } from "../tools/joule/borrow";
+import { repayToken } from "../tools/joule/repay";
+import { withdrawToken } from "../tools/joule/withdraw";
+import { getUserPosition } from "../tools/joule/user-position";
+import { getUserAllPositions } from "../tools/joule/user-all-positions";
+import { claimReward } from "../tools/joule/claim-reward";
+import { stakeTokenWithThala } from "../tools/thala/stake";
+import { unstakeTokenWithThala } from "../tools/thala/unstake";
+import { mintMod } from "../tools/thala/mint-mod";
+import { redeemMod } from "../tools/thala/redeem-mod";
 
 export class AptosAgent {
     public account: Account;
@@ -170,5 +184,104 @@ export class AptosAgent {
             hash,
             success: true
         };
+    }
+
+    // Enhanced Liquidswap methods
+    async addLiquidity(
+        mintX: MoveStructId,
+        mintY: MoveStructId,
+        mintXAmount: number,
+        mintYAmount: number
+    ): Promise<string> {
+        return addLiquidity(this, mintX, mintY, mintXAmount, mintYAmount);
+    }
+
+    async removeLiquidity(
+        mintX: MoveStructId,
+        mintY: MoveStructId,
+        lpAmount: number
+    ): Promise<string> {
+        return removeLiquidity(this, mintX, mintY, lpAmount);
+    }
+
+    async createPool(
+        mintX: MoveStructId,
+        mintY: MoveStructId
+    ): Promise<string> {
+        return createPool(this, mintX, mintY);
+    }
+
+    // Joule Finance methods
+    async jouleLend(
+        amount: number,
+        mint: MoveStructId,
+        positionId: string,
+        newPosition: boolean,
+        fungibleAsset: boolean = false
+    ): Promise<{ hash: string; positionId: string }> {
+        return lendToken(this, amount, mint, positionId, newPosition, fungibleAsset);
+    }
+
+    async jouleBorrow(
+        amount: number,
+        mint: MoveStructId,
+        positionId: string,
+        fungibleAsset: boolean = false
+    ): Promise<string> {
+        return borrowToken(this, amount, mint, positionId, fungibleAsset);
+    }
+
+    async jouleRepay(
+        amount: number,
+        mint: MoveStructId,
+        positionId: string,
+        fungibleAsset: boolean = false
+    ): Promise<string> {
+        return repayToken(this, amount, mint, positionId, fungibleAsset);
+    }
+
+    async jouleWithdraw(
+        amount: number,
+        mint: MoveStructId,
+        positionId: string,
+        fungibleAsset: boolean = false
+    ): Promise<string> {
+        return withdrawToken(this, amount, mint, positionId, fungibleAsset);
+    }
+
+    async jouleGetPosition(positionId: string): Promise<any> {
+        return getUserPosition(this, positionId);
+    }
+
+    async jouleGetAllPositions(): Promise<any[]> {
+        return getUserAllPositions(this);
+    }
+
+    async jouleClaimReward(positionId: string): Promise<string> {
+        return claimReward(this, positionId);
+    }
+
+    // Thala Finance methods
+    async thalaStake(amount: number): Promise<string> {
+        return stakeTokenWithThala(this, amount);
+    }
+
+    async thalaUnstake(amount: number): Promise<string> {
+        return unstakeTokenWithThala(this, amount);
+    }
+
+    async thalaMintMod(
+        collateralType: MoveStructId,
+        collateralAmount: number,
+        modAmount: number
+    ): Promise<string> {
+        return mintMod(this, collateralType, collateralAmount, modAmount);
+    }
+
+    async thalaRedeemMod(
+        collateralType: MoveStructId,
+        modAmount: number
+    ): Promise<string> {
+        return redeemMod(this, collateralType, modAmount);
     }
 }
