@@ -1,6 +1,6 @@
 {
     "name": "@tamago-labs/aptos-mcp",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "MCP server implementation for Aptos blockchain",
     "main": "dist/index.js",
     "module": "./dist/index.mjs",
@@ -37,8 +37,7 @@
     "homepage": "https://tamagolabs.com",
     "devDependencies": {
         "@types/jest": "^29.5.14",
-        "@types/node": "^22.15.2",
-        "dotenv": "^16.5.0",
+        "@types/node": "^22.15.2", 
         "jest": "^29.7.0",
         "ts-jest": "^29.3.2",
         "ts-node": "^10.9.2",
@@ -46,6 +45,7 @@
         "typescript": "^5.8.3"
     },
     "dependencies": {
+        "dotenv": "^16.5.0",
         "@aptos-labs/ts-sdk": "^1.33.1",
         "@modelcontextprotocol/sdk": "^1.10.2",
         "@pythnetwork/client": "^2.22.0",
