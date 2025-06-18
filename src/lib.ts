@@ -7,7 +7,6 @@ export * from './tools/aptos/transfer-token';
 export * from './tools/aptos/create-token';
 export * from './tools/aptos/mint-token';
 export * from './tools/aptos/burn-token';
-export * from './tools/aptos/get-token-details';
 export * from './tools/aptos/get-token-price';
 export * from './tools/aptos/get-transaction';
 export * from './tools/liquidswap/swap';
