@@ -11,8 +11,3 @@ export * from './tools/aptos/get-token-price';
 export * from './tools/aptos/get-transaction';
 export * from './tools/liquidswap/swap';
 export * from './tools/staking/stake';
-export * from './tools/cli/executor';
-export * from './tools/cli/account';
-export * from './tools/cli/move';
-export * from './tools/cli/config';
-export * from './tools/cli/query';

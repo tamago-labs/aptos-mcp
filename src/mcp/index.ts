@@ -23,8 +23,7 @@ import {
     ThalaUnstakeTool, 
     ThalaMintModTool, 
     ThalaRedeemModTool 
-} from "./thala/thala-tools";
-import { AptosCliTools } from "./cli";
+} from "./thala/thala-tools"; 
 
 export const AptosMcpTools = {
     // Core Aptos Tools
@@ -60,8 +59,5 @@ export const AptosMcpTools = {
     "ThalaStakeTool": ThalaStakeTool,
     "ThalaUnstakeTool": ThalaUnstakeTool,
     "ThalaMintModTool": ThalaMintModTool,
-    "ThalaRedeemModTool": ThalaRedeemModTool,
-    
-    // CLI Tools
-    ...AptosCliTools,
+    "ThalaRedeemModTool": ThalaRedeemModTool, 
 }
