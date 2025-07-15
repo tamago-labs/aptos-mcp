@@ -1,8 +1,8 @@
-import { 
-    Account, 
-    AccountAddress, 
-    Aptos, 
-    AptosConfig as AptosSDKConfig, 
+import {
+    Account,
+    AccountAddress,
+    Aptos,
+    AptosConfig as AptosSDKConfig,
     Ed25519PrivateKey,
     Secp256k1PrivateKey,
     Network,
@@ -16,7 +16,7 @@ import { getBalance } from "../tools/aptos/balance";
 import { transferTokens } from "../tools/aptos/transfer-token";
 import { createToken } from "../tools/aptos/create-token";
 import { mintToken } from "../tools/aptos/mint-token";
-import { burnToken } from "../tools/aptos/burn-token"; 
+import { burnToken } from "../tools/aptos/burn-token";
 import { getTokenPrice } from "../tools/aptos/get-token-price";
 import { getTransaction } from "../tools/aptos/get-transaction";
 import { swapTokens } from "../tools/liquidswap/swap";
@@ -44,9 +44,9 @@ class KeyFormatDetector {
     static detectAndCreateKey(privateKeyInput: string): Ed25519PrivateKey | Secp256k1PrivateKey {
         const cleanKey = this.cleanPrivateKey(privateKeyInput);
         const format = this.detectKeyFormat(privateKeyInput, cleanKey);
-        
+
         console.error(`Auto-detected key format: ${format}`);
-        
+
         switch (format) {
             case 'secp256k1':
                 return new Secp256k1PrivateKey(
@@ -65,7 +65,7 @@ class KeyFormatDetector {
      */
     private static cleanPrivateKey(privateKey: string): string {
         let cleaned = privateKey.trim();
-        
+
         // Remove common prefixes
         const prefixes = [
             'secp256k1-priv-',
@@ -73,19 +73,19 @@ class KeyFormatDetector {
             'private-key-',
             'priv-',
         ];
-        
+
         for (const prefix of prefixes) {
             if (cleaned.toLowerCase().startsWith(prefix.toLowerCase())) {
                 cleaned = cleaned.substring(prefix.length);
                 break;
             }
         }
-        
+
         // Ensure 0x prefix for hex strings
         if (!cleaned.startsWith('0x') && this.isHexString(cleaned)) {
             cleaned = '0x' + cleaned;
         }
-        
+
         return cleaned;
     }
 
@@ -97,25 +97,25 @@ class KeyFormatDetector {
         if (originalKey.toLowerCase().includes('secp256k1')) {
             return 'secp256k1';
         }
-        
+
         if (originalKey.toLowerCase().includes('ed25519')) {
             return 'ed25519';
         }
-        
+
         // 2. Check key length (after removing 0x prefix)
         const keyHex = cleanedKey.startsWith('0x') ? cleanedKey.slice(2) : cleanedKey;
-        
+
         if (keyHex.length === 64) {
             // Both secp256k1 and ed25519 can be 32 bytes (64 hex chars)
             // Try additional heuristics
             return this.advancedKeyFormatDetection(keyHex);
         }
-        
+
         if (keyHex.length === 66 && keyHex.startsWith('00')) {
             // Sometimes secp256k1 keys are padded
             return 'secp256k1';
         }
-        
+
         // 3. Default to ed25519 for Aptos compatibility
         return 'ed25519';
     }
@@ -127,32 +127,32 @@ class KeyFormatDetector {
         try {
             // Try to create both key types and see which one works
             // This is a validation approach
-            
+
             const keyBytes = this.hexToBytes(keyHex);
-            
+
             // Ed25519 keys should be exactly 32 bytes and within valid range
             if (keyBytes.length === 32) {
                 // Check if the key looks like it could be ed25519
                 // Ed25519 private keys are clamped scalars, so certain patterns are more likely
-                
+
                 // Secp256k1 keys must be less than the curve order
                 const secp256k1Order = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141');
                 const keyValue = BigInt('0x' + keyHex);
-                
+
                 if (keyValue >= secp256k1Order) {
                     // Invalid for secp256k1, likely ed25519
                     return 'ed25519';
                 }
-                
+
                 // If we have additional context clues, use them
                 // For now, default to ed25519 since it's more common in Aptos
                 return 'ed25519';
             }
-            
+
         } catch (error) {
             console.warn('Error in advanced key detection:', error);
         }
-        
+
         // Default fallback
         return 'ed25519';
     }
@@ -182,7 +182,7 @@ class KeyFormatDetector {
         try {
             const key = this.detectAndCreateKey(privateKeyInput);
             const account = Account.fromPrivateKey({ privateKey: key });
-            
+
             return {
                 isValid: true,
                 format: key instanceof Secp256k1PrivateKey ? 'secp256k1' : 'ed25519',
@@ -205,7 +205,7 @@ export class AptosAgent {
 
     constructor() {
         const config = getAptosConfig();
-        
+
         // Map network string to Network enum
         let networkEnum: Network;
         switch (config.network) {
@@ -229,17 +229,19 @@ export class AptosAgent {
         this.aptos = new Aptos(aptosConfig);
 
         // Validate the key first
-        const validation = KeyFormatDetector.validateKey(config.privateKey);
-        if (!validation.isValid) {
-            throw new Error(`Invalid private key: ${validation.error}`);
+        if (config.privateKey) {
+            const validation = KeyFormatDetector.validateKey(config?.privateKey);
+            if (!validation.isValid) {
+                throw new Error(`Invalid private key: ${validation.error}`);
+            }
         }
 
         // Auto-detect and create the appropriate private key
-        const privateKey = KeyFormatDetector.detectAndCreateKey(config.privateKey);
+        const privateKey = KeyFormatDetector.detectAndCreateKey(config.privateKey || `${(Account.generate().privateKey)}`);
         this.keyFormat = privateKey instanceof Secp256k1PrivateKey ? 'secp256k1' : 'ed25519';
-        
+
         console.error(`✅ Successfully initialized AptosAgent with ${this.keyFormat} key format`);
-        
+
         this.account = Account.fromPrivateKey({ privateKey });
     }
 
@@ -247,9 +249,9 @@ export class AptosAgent {
         return this.account.accountAddress.toString();
     }
 
-    async getKeyInfo(): Promise<{ 
-        address: string; 
-        format: string; 
+    async getKeyInfo(): Promise<{
+        address: string;
+        format: string;
         publicKey: string;
     }> {
         return {
@@ -341,7 +343,7 @@ export class AptosAgent {
             success: true
         };
     }
- 
+
 
     async getTokenPrice(query: string): Promise<{ price: number; symbol: string }> {
         return getTokenPrice(query);

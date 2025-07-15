@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-
-import { validateEnvironment } from './config';
+ 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { AptosMcpTools } from './mcp';
@@ -56,9 +55,7 @@ function createMcpServer(
 }
 
 async function main() {
-    try {
-        // Validate environment before proceeding
-        validateEnvironment();
+    try { 
 
         const aptosAgent = new AptosAgent();
 

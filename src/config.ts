@@ -2,6 +2,7 @@
 
 import { AptosConfig } from './types';
 
+import 'dotenv/config'
 
 const getArgs = () =>
     process.argv.reduce((args: any, arg: any) => {
@@ -22,33 +23,13 @@ const getArgs = () =>
         return args;
     }, {});
 
-export function validateEnvironment(): void {
-    const args = getArgs();
-
-    // Check if private key is provided
-    const hasPrivateKey = !!(args?.aptos_private_key);
-
-    if (!hasPrivateKey) {
-        throw new Error(
-            'Missing required environment variable: APTOS_PRIVATE_KEY must be provided'
-        );
-    }
-
-    // Network is required
-    const hasAptosNetwork = !!(args?.aptos_network);
-    if (!hasAptosNetwork) {
-        throw new Error('Missing required environment variable: APTOS_NETWORK');
-    }
-}
-
 export function getAptosConfig(): AptosConfig {
-    validateEnvironment();
 
     const args = getArgs();
 
     const currentEnv = {
-        APTOS_PRIVATE_KEY: args?.aptos_private_key,
-        APTOS_NETWORK: args?.aptos_network,
+        APTOS_PRIVATE_KEY: process.env.APTOS_PRIVATE_KEY || args?.aptos_private_key,
+        APTOS_NETWORK: process.env.APTOS_NETWORK || args?.aptos_network,
     };
 
     return {
