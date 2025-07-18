@@ -45,6 +45,7 @@ import {
     GetLiquidswapPoolInfoTool,
     ListThalaPoolsTool
 } from "./liquidswap/pool-tools";
+import { ValidatorMcpTools } from "./validators/validator-tools";
 
 
 export const AptosMcpTools = {
@@ -102,6 +103,8 @@ export const AptosMcpTools = {
 
     // Panora - DEX Aggregator
     "SwapWithPanoraTool": SwapWithPanoraTool,
-    "GetPanoraQuoteTool": GetPanoraQuoteTool
- 
+    "GetPanoraQuoteTool": GetPanoraQuoteTool,
+
+    // Validator Information and Analysis Tools
+    ...ValidatorMcpTools
 }

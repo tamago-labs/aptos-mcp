@@ -17,7 +17,8 @@
         "test": "jest",
         "test:echelon": "ts-node test-echelon.ts",
         "test:joule": "ts-node test-joule.ts",
-        "test:coin-resolver": "ts-node test-coin-resolver.ts"
+        "test:coin-resolver": "ts-node test-coin-resolver.ts",
+        "test:validator": "ts-node test-validator-tools.ts"
     },
     "repository": {
         "type": "git",
