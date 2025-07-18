@@ -3,45 +3,36 @@ import { GetAddressTool } from "./aptos/get-address-tool";
 import { TransferTokenTool } from "./aptos/transfer-token-tool";
 import { CreateTokenTool } from "./aptos/create-token-tool";
 import { MintTokenTool } from "./aptos/mint-token-tool";
-import { BurnTokenTool } from "./aptos/burn-token-tool"; 
+import { BurnTokenTool } from "./aptos/burn-token-tool";
 import { GetTokenPriceTool } from "./aptos/get-token-price-tool";
 import { GetTransactionTool } from "./aptos/get-transaction-tool";
 import { SwapTokensTool } from "./liquidswap/swap-tokens-tool";
 import { AddLiquidityTool, RemoveLiquidityTool, CreatePoolTool } from "./liquidswap/liquidity-tools";
 import { StakeAPTTool, UnstakeAPTTool } from "./staking/stake-tools";
-import { 
-    JouleLendTool, 
-    JouleBorrowTool, 
-    JouleRepayTool, 
+import {
+    JouleLendTool,
+    JouleBorrowTool,
+    JouleRepayTool,
     JouleWithdrawTool,
     JouleGetPositionTool,
     JouleGetAllPositionsTool,
     JouleClaimRewardTool,
     JouleListPoolsTool
 } from "./joule/joule-tools";
-import { 
-    ThalaStakeTool, 
-    ThalaUnstakeTool, 
-    ThalaMintModTool, 
-    ThalaRedeemModTool 
+import {
+    ThalaStakeTool,
+    ThalaUnstakeTool,
+    ThalaMintModTool,
+    ThalaRedeemModTool
 } from "./thala/thala-tools";
 import {
-    ListJoulePoolsTool,
-    ListLiquidswapPoolsTool,
-    GetLiquidswapPoolInfoTool,
-    ListThalaPoolsTool,
-    ListAllSupportedTokensTool,
-    SearchTokensTool,
-    GetBestLendingRatesTool,
-    GetAllLiquidityPoolsTool
-} from "./discovery-tools";
-import {
-    CreateAriesProfileTool,
-    LendOnAriesTool,
-    BorrowOnAriesTool,
-    RepayOnAriesTool,
-    WithdrawFromAriesTool
-} from "./aries/aries-tools";
+    ListEchelonMarketsTool,
+    SupplyToEchelonTool,
+    BorrowFromEchelonTool,
+    RepayToEchelonTool,
+    WithdrawFromEchelonTool,
+    GetEchelonUserPositionTool
+} from "./echelon/echelon-tools";
 import {
     PlaceMerkleMarketOrderTool,
     PlaceMerkleLimitOrderTool,
@@ -53,9 +44,11 @@ import {
     GetPanoraQuoteTool
 } from "./panora/panora-tools";
 import {
-    GetAllUserPositionsTool,
-    GetUserPortfolioSummaryTool
-} from "./portfolio-tools"; 
+    ListLiquidswapPoolsTool,
+    GetLiquidswapPoolInfoTool,
+    ListThalaPoolsTool
+} from "./liquidswap/pool-tools";
+
 
 export const AptosMcpTools = {
     // Core Aptos Tools
@@ -64,20 +57,20 @@ export const AptosMcpTools = {
     "TransferTokenTool": TransferTokenTool,
     "CreateTokenTool": CreateTokenTool,
     "MintTokenTool": MintTokenTool,
-    "BurnTokenTool": BurnTokenTool, 
+    "BurnTokenTool": BurnTokenTool,
     "GetTokenPriceTool": GetTokenPriceTool,
     "GetTransactionTool": GetTransactionTool,
-    
+
     // Liquidswap DEX Tools
     "SwapTokensTool": SwapTokensTool,
     "AddLiquidityTool": AddLiquidityTool,
     "RemoveLiquidityTool": RemoveLiquidityTool,
     "CreatePoolTool": CreatePoolTool,
-    
+
     // Basic Staking Tools
     "StakeAPTTool": StakeAPTTool,
     "UnstakeAPTTool": UnstakeAPTTool,
-    
+
     // Joule Finance - Lending Protocol
     "JouleLendTool": JouleLendTool,
     "JouleBorrowTool": JouleBorrowTool,
@@ -87,41 +80,34 @@ export const AptosMcpTools = {
     "JouleGetAllPositionsTool": JouleGetAllPositionsTool,
     "JouleClaimRewardTool": JouleClaimRewardTool,
     "JouleListPoolsTool": JouleListPoolsTool,
-    
+
     // Thala Finance - Liquid Staking & Stable Coin
     "ThalaStakeTool": ThalaStakeTool,
     "ThalaUnstakeTool": ThalaUnstakeTool,
     "ThalaMintModTool": ThalaMintModTool,
     "ThalaRedeemModTool": ThalaRedeemModTool,
-    
-    // Pool Discovery & Token Listing Tools
-    "ListJoulePoolsTool": ListJoulePoolsTool,
+
+    // Pool Listing Tools
     "ListLiquidswapPoolsTool": ListLiquidswapPoolsTool,
     "GetLiquidswapPoolInfoTool": GetLiquidswapPoolInfoTool,
     "ListThalaPoolsTool": ListThalaPoolsTool,
-    "ListAllSupportedTokensTool": ListAllSupportedTokensTool,
-    "SearchTokensTool": SearchTokensTool,
-    "GetBestLendingRatesTool": GetBestLendingRatesTool,
-    "GetAllLiquidityPoolsTool": GetAllLiquidityPoolsTool,
-    
-    // Aries Finance - Lending Protocol
-    "CreateAriesProfileTool": CreateAriesProfileTool,
-    "LendOnAriesTool": LendOnAriesTool,
-    "BorrowOnAriesTool": BorrowOnAriesTool,
-    "RepayOnAriesTool": RepayOnAriesTool,
-    "WithdrawFromAriesTool": WithdrawFromAriesTool,
-    
+
+    // Echelon Finance - Lending Protocol
+    "ListEchelonMarketsTool": ListEchelonMarketsTool,
+    "SupplyToEchelonTool": SupplyToEchelonTool,
+    "BorrowFromEchelonTool": BorrowFromEchelonTool,
+    "RepayToEchelonTool": RepayToEchelonTool,
+    "WithdrawFromEchelonTool": WithdrawFromEchelonTool,
+    "GetEchelonUserPositionTool": GetEchelonUserPositionTool,
+
     // MerkleTrade - Perpetual Trading
     "PlaceMerkleMarketOrderTool": PlaceMerkleMarketOrderTool,
     "PlaceMerkleLimitOrderTool": PlaceMerkleLimitOrderTool,
     "CloseMerklePositionTool": CloseMerklePositionTool,
     "GetMerklePositionsTool": GetMerklePositionsTool,
-    
+
     // Panora - DEX Aggregator
     "SwapWithPanoraTool": SwapWithPanoraTool,
-    "GetPanoraQuoteTool": GetPanoraQuoteTool,
-    
-    // Portfolio & Cross-Protocol Tools
-    "GetAllUserPositionsTool": GetAllUserPositionsTool,
-    "GetUserPortfolioSummaryTool": GetUserPortfolioSummaryTool,
+    "GetPanoraQuoteTool": GetPanoraQuoteTool
+ 
 }
