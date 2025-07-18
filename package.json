@@ -1,6 +1,6 @@
 {
     "name": "@tamago-labs/aptos-mcp",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "MCP server implementation for Aptos blockchain",
     "main": "dist/index.js",
     "module": "./dist/index.mjs",
@@ -14,7 +14,10 @@
     "scripts": {
         "build": "tsup",
         "prepare": "npm run build",
-        "test": "jest"
+        "test": "jest",
+        "test:echelon": "ts-node test-echelon.ts",
+        "test:joule": "ts-node test-joule.ts",
+        "test:coin-resolver": "ts-node test-coin-resolver.ts"
     },
     "repository": {
         "type": "git",

@@ -1,11 +1,10 @@
 import { z } from "zod";
 import { 
-    listEchelonMarkets,
-    supplyToEchelon,
-    borrowFromEchelon,
-    repayToEchelon,
-    withdrawFromEchelon,
-    getEchelonUserPosition
+    listEchelonMarkets, 
+    getEchelonUserPosition,
+    getEchelonMarketInfo,
+    formatAprAsPercentage,
+    formatPrice
 } from "../../tools/echelon";
 
 const ListEchelonMarketsInputSchema = z.object({});
@@ -16,109 +15,46 @@ export const ListEchelonMarketsTool = {
     schema: ListEchelonMarketsInputSchema,
     handler: async (agent: any, input: any) => {
         const markets = await listEchelonMarkets(agent.aptos);
+        
+        // Add formatted values for better readability
+        const formattedMarkets = markets.map((market: any) => ({
+            ...market,
+            supplyAprFormatted: formatAprAsPercentage(market.supplyApr),
+            borrowAprFormatted: formatAprAsPercentage(market.borrowApr),
+            priceFormatted: formatPrice(market.price)
+        }));
+
         return {
             message: `Retrieved ${markets.length} Echelon Finance markets`,
-            markets: markets
+            markets: formattedMarkets,
+            summary: {
+                totalMarkets: markets.length,
+                validMarkets: markets.filter((m: any) => !m.error).length,
+                errorMarkets: markets.filter((m: any) => m.error).length
+            }
         };
     }
 };
 
-const SupplyToEchelonInputSchema = z.object({
-    coinAddress: z.string().describe("Token address to supply"),
-    market: z.string().describe("Market identifier"),
-    amount: z.number().describe("Amount to supply")
+const GetEchelonMarketInfoInputSchema = z.object({
+    marketId: z.string().describe("Market identifier to get information for")
 });
 
-export const SupplyToEchelonTool = {
-    name: "supply_to_echelon",
-    description: "Supply (lend) tokens to Echelon Finance to earn interest",
-    schema: SupplyToEchelonInputSchema,
+export const GetEchelonMarketInfoTool = {
+    name: "get_echelon_market_info", 
+    description: "Get detailed information for a specific Echelon Finance market",
+    schema: GetEchelonMarketInfoInputSchema,
     handler: async (agent: any, input: any) => {
-        const hash = await supplyToEchelon(
-            agent.aptos,
-            agent.account,
-            input.coinAddress,
-            input.market,
-            input.amount
-        );
+        const marketInfo = await getEchelonMarketInfo(agent.aptos, input.marketId);
+        
         return {
-            message: `Successfully supplied ${input.amount} tokens to Echelon market ${input.market}`,
-            hash: hash
-        };
-    }
-};
-
-const BorrowFromEchelonInputSchema = z.object({
-    coinAddress: z.string().describe("Token address to borrow"),
-    market: z.string().describe("Market identifier"),
-    amount: z.number().describe("Amount to borrow")
-});
-
-export const BorrowFromEchelonTool = {
-    name: "borrow_from_echelon",
-    description: "Borrow tokens from Echelon Finance using collateral",
-    schema: BorrowFromEchelonInputSchema,
-    handler: async (agent: any, input: any) => {
-        const hash = await borrowFromEchelon(
-            agent.aptos,
-            agent.account,
-            input.coinAddress,
-            input.market,
-            input.amount
-        );
-        return {
-            message: `Successfully borrowed ${input.amount} tokens from Echelon market ${input.market}`,
-            hash: hash
-        };
-    }
-};
-
-const RepayToEchelonInputSchema = z.object({
-    coinAddress: z.string().describe("Token address to repay"),
-    market: z.string().describe("Market identifier"),
-    amount: z.number().describe("Amount to repay")
-});
-
-export const RepayToEchelonTool = {
-    name: "repay_to_echelon",
-    description: "Repay borrowed tokens to Echelon Finance",
-    schema: RepayToEchelonInputSchema,
-    handler: async (agent: any, input: any) => {
-        const hash = await repayToEchelon(
-            agent.aptos,
-            agent.account,
-            input.coinAddress,
-            input.market,
-            input.amount
-        );
-        return {
-            message: `Successfully repaid ${input.amount} tokens to Echelon market ${input.market}`,
-            hash: hash
-        };
-    }
-};
-
-const WithdrawFromEchelonInputSchema = z.object({
-    coinAddress: z.string().describe("Token address to withdraw"),
-    market: z.string().describe("Market identifier"),
-    share: z.number().describe("Share amount to withdraw")
-});
-
-export const WithdrawFromEchelonTool = {
-    name: "withdraw_from_echelon",
-    description: "Withdraw supplied tokens from Echelon Finance",
-    schema: WithdrawFromEchelonInputSchema,
-    handler: async (agent: any, input: any) => {
-        const hash = await withdrawFromEchelon(
-            agent.aptos,
-            agent.account,
-            input.coinAddress,
-            input.market,
-            input.share
-        );
-        return {
-            message: `Successfully withdrew tokens from Echelon market ${input.market}`,
-            hash: hash
+            message: `Retrieved market information for ${input.marketId}`,
+            market: {
+                ...marketInfo,
+                supplyAprFormatted: formatAprAsPercentage(marketInfo.supplyApr),
+                borrowAprFormatted: formatAprAsPercentage(marketInfo.borrowApr),
+                priceFormatted: formatPrice(marketInfo.price)
+            }
         };
     }
 };
@@ -143,3 +79,5 @@ export const GetEchelonUserPositionTool = {
         };
     }
 };
+
+// Export only the market data tools - no lending/borrowing functionality

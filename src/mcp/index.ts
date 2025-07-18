@@ -27,10 +27,7 @@ import {
 } from "./thala/thala-tools";
 import {
     ListEchelonMarketsTool,
-    SupplyToEchelonTool,
-    BorrowFromEchelonTool,
-    RepayToEchelonTool,
-    WithdrawFromEchelonTool,
+    GetEchelonMarketInfoTool,
     GetEchelonUserPositionTool
 } from "./echelon/echelon-tools";
 import {
@@ -92,12 +89,9 @@ export const AptosMcpTools = {
     "GetLiquidswapPoolInfoTool": GetLiquidswapPoolInfoTool,
     "ListThalaPoolsTool": ListThalaPoolsTool,
 
-    // Echelon Finance - Lending Protocol
+    // Echelon Finance - Market Data Only
     "ListEchelonMarketsTool": ListEchelonMarketsTool,
-    "SupplyToEchelonTool": SupplyToEchelonTool,
-    "BorrowFromEchelonTool": BorrowFromEchelonTool,
-    "RepayToEchelonTool": RepayToEchelonTool,
-    "WithdrawFromEchelonTool": WithdrawFromEchelonTool,
+    "GetEchelonMarketInfoTool": GetEchelonMarketInfoTool,
     "GetEchelonUserPositionTool": GetEchelonUserPositionTool,
 
     // MerkleTrade - Perpetual Trading
