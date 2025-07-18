@@ -2,16 +2,20 @@
 
 ![NPM Version](https://img.shields.io/npm/v/@tamago-labs/aptos-mcp)
 
-**Aptos MCP** is a comprehensive Model Context Protocol (MCP) server implementation for the Aptos blockchain, compatible with MCP clients like Claude Desktop or Cursor.ai. It provides a complete DeFi toolkit covering major Aptos protocols including lending, DEX operations, liquid staking, and smart contract development through the Aptos CLI.
+**Aptos MCP** is a comprehensive Model Context Protocol (MCP) server implementation for the Aptos blockchain, compatible with MCP clients like Claude Desktop or Cursor.ai. It provides a complete DeFi toolkit covering major Aptos protocols including pool discovery, lending, DEX operations, perpetual trading, liquid staking, and cross-protocol portfolio management.
 
 ## Features
 
-- **25+ MCP tools** covering the complete Aptos DeFi ecosystem
+- **50+ MCP tools** covering the complete Aptos DeFi ecosystem
+- **Universal Pool Discovery** - Discover and list pools across all protocols
 - **Complete DEX integration** - Liquidswap with swapping, liquidity management, and pool creation
-- **Professional lending protocols** - Joule Finance with full lending/borrowing workflow
+- **Professional lending protocols** - Joule Finance and Aries Finance with full lending/borrowing workflow
+- **Perpetual trading** - MerkleTrade integration for advanced trading strategies
+- **DEX aggregation** - Panora Exchange for optimal swap routing
 - **Liquid staking options** - Thala Finance and Amnis Finance integrations
+- **Cross-protocol portfolio management** - Unified position tracking and analysis
 - **Stablecoin operations** - MOD minting and redemption through Thala
-- **Native APT staking** with validator insights from AI 
+- **Native APT staking** with validator insights from AI
 
 ## Using with Claude Desktop
 
@@ -43,21 +47,25 @@ This Private Key mode is recommended for advanced users who can securely manage 
 ### 1. Complete DeFi Portfolio Management 
 The agent connects to price oracles and major DeFi protocols to help you:
 
-- **Monitor and analyze** real-time cryptocurrency prices across multiple assets
+- **Discover and monitor** all available pools across DeFi protocols
 - **Execute complex DeFi strategies** across lending, borrowing, and liquidity provision
+- **Trade perpetuals** with advanced position management on MerkleTrade
+- **Optimize swap routes** using Panora DEX aggregator for best rates
 - **Manage liquid staking positions** with Thala and Amnis protocols
+- **Track cross-protocol positions** with unified portfolio analysis
 - **Trade and provide liquidity** on Liquidswap DEX with advanced pool management
-- **Track lending positions** across Joule Finance with automated reward claiming
-- **Mint and manage stablecoins** through Thala's MOD protocol
+- **Track lending positions** across Joule Finance and Aries Finance
 
 ### 2. Advanced DeFi Protocol Management
 The agent assists DeFi protocol managers and power users with:
 
+- **Universal pool discovery** across all Aptos DeFi protocols
 - **Multi-protocol position management** across lending platforms
+- **Perpetual trading strategies** with MerkleTrade integration
 - **Liquidity optimization** strategies across different DEX pools
-- **Yield farming** and reward optimization across protocols
+- **Cross-protocol yield farming** and reward optimization
 - **Risk management** through diversified staking and lending
-- **Parameter optimization** based on real-time market conditions
+- **Real-time rate comparison** across lending protocols
 
 ## Available Tools
 
@@ -68,13 +76,25 @@ The agent assists DeFi protocol managers and power users with:
 | `aptos_get_balance` | Get APT or token balance | "Show my APT balance" |
 | `aptos_transfer_token` | Transfer tokens to another address | "Transfer 10 APT to 0x123..." |
 
-### Token Management
+### Token Management & Discovery
 | Tool Name | Description | Example Usage |
 |-----------|-------------|---------------|
 | `aptos_create_token` | Create a new token on Aptos | "Create a token named MyToken with symbol MTK" |
 | `aptos_mint_token` | Mint tokens to an address | "Mint 1000 MTK tokens to 0x456..." |
 | `aptos_burn_token` | Burn tokens from your account | "Burn 100 MTK tokens" |
 | `aptos_get_token_price` | Get token price | "What's the current price of APT?" |
+| `list_all_supported_tokens` | Get all supported tokens across protocols | "Show me all available tokens" |
+| `search_tokens` | Search tokens by name/symbol/address | "Find all USDC tokens" |
+
+### Pool Discovery & Liquidity Management
+| Tool Name | Description | Example Usage |
+|-----------|-------------|---------------|
+| `list_joule_pools` | List all Joule Finance lending pools | "Show all available lending pools" |
+| `list_liquidswap_pools` | List all Liquidswap DEX pools | "Show all trading pools" |
+| `get_liquidswap_pool_info` | Get specific pool information | "Show APT/USDC pool details" |
+| `list_thala_pools` | List all Thala pools (DEX & staking) | "Show Thala pool options" |
+| `get_all_liquidity_pools` | Aggregate pools from all DEXes | "Show all liquidity pools" |
+| `get_best_lending_rates` | Compare rates across protocols | "Find best lending rates" |
 
 ### Liquidswap DEX Operations
 | Tool Name | Description | Example Usage |
@@ -94,6 +114,30 @@ The agent assists DeFi protocol managers and power users with:
 | `aptos_joule_get_position` | Get specific position details | "Show details for position pos_123" |
 | `aptos_joule_get_all_positions` | Get all lending positions | "Show all my Joule Finance positions" |
 | `aptos_joule_claim_reward` | Claim lending rewards | "Claim rewards from my lending positions" |
+| `aptos_joule_list_pools` | List all Joule lending pools | "Show available lending markets" |
+
+### Aries Finance - Lending Protocol
+| Tool Name | Description | Example Usage |
+|-----------|-------------|---------------|
+| `create_aries_profile` | Create user profile on Aries | "Set up my Aries Finance account" |
+| `lend_on_aries` | Lend tokens to earn interest | "Lend 200 USDC to Aries Finance" |
+| `borrow_on_aries` | Borrow tokens against collateral | "Borrow 100 APT using USDC collateral" |
+| `repay_on_aries` | Repay borrowed tokens | "Repay 50 APT to Aries Finance" |
+| `withdraw_from_aries` | Withdraw lent tokens | "Withdraw 100 USDC from Aries" |
+
+### MerkleTrade - Perpetual Trading
+| Tool Name | Description | Example Usage |
+|-----------|-------------|---------------|
+| `place_merkle_market_order` | Place market order for perps | "Long 1000 USDC worth of APT-PERP" |
+| `place_merkle_limit_order` | Place limit order for perps | "Set limit buy for APT-PERP at $8.50" |
+| `close_merkle_position` | Close trading position | "Close my APT-PERP position" |
+| `get_merkle_positions` | Get all trading positions | "Show my perpetual positions" |
+
+### Panora - DEX Aggregator
+| Tool Name | Description | Example Usage |
+|-----------|-------------|---------------|
+| `swap_with_panora` | Swap with best rates across DEXes | "Swap 100 APT for USDC using Panora" |
+| `get_panora_quote` | Get swap quote from aggregator | "Quote 50 USDC to APT via Panora" |
 
 ### Thala Finance - Liquid Staking & Stablecoin
 | Tool Name | Description | Example Usage |
@@ -102,6 +146,12 @@ The agent assists DeFi protocol managers and power users with:
 | `aptos_thala_unstake` | Unstake thAPT back to APT | "Unstake 100 thAPT tokens" |
 | `aptos_thala_mint_mod` | Mint MOD stablecoin | "Mint 150 MOD using thAPT as collateral" |
 | `aptos_thala_redeem_mod` | Redeem MOD for collateral | "Redeem 75 MOD tokens for thAPT" |
+
+### Cross-Protocol Portfolio Management
+| Tool Name | Description | Example Usage |
+|-----------|-------------|---------------|
+| `get_all_user_positions` | Get positions across all protocols | "Show all my DeFi positions" |
+| `get_user_portfolio_summary` | Comprehensive portfolio analysis | "Analyze my complete portfolio" |
 
 ### Native Staking Operations
 | Tool Name | Description | Example Usage |
@@ -116,17 +166,60 @@ The agent assists DeFi protocol managers and power users with:
 
 ## Example Interactions
 
-### Advanced DeFi Portfolio Management
+### Universal Pool Discovery
 ```
-User: "Help me optimize my DeFi portfolio: Check my balances, stake some APT with Thala, 
-       lend the rest to Joule Finance, and add liquidity to the APT/USDC pool"
+User: "Show me all available pools across all protocols on Aptos"
 
 Agent: 
-1. Uses aptos_get_balance to check current holdings
-2. Uses aptos_thala_stake to stake 50% of APT for thAPT
-3. Uses aptos_joule_lend to lend remaining APT for yield
-4. Uses aptos_add_liquidity to provide liquidity on Liquidswap
-5. Shows portfolio summary with expected yields
+1. Uses list_joule_pools to show lending markets
+2. Uses list_liquidswap_pools to show DEX pools  
+3. Uses list_thala_pools to show Thala options
+4. Uses get_best_lending_rates to compare yields
+5. Provides comprehensive overview with recommendations
+```
+
+### Advanced DeFi Portfolio Analysis
+```
+User: "Analyze my complete DeFi portfolio across all protocols"
+
+Agent:
+1. Uses get_all_user_positions to aggregate all positions
+2. Uses get_user_portfolio_summary for comprehensive analysis
+3. Shows total value, yield breakdown, and risk assessment
+4. Provides optimization recommendations across protocols
+```
+
+### Perpetual Trading Strategy
+```
+User: "Help me set up a long position on APT with proper risk management"
+
+Agent:
+1. Uses get_merkle_positions to check current exposure
+2. Uses place_merkle_limit_order to enter position at target price
+3. Sets up stop-loss and take-profit levels
+4. Monitors position with regular updates
+```
+
+### Cross-Protocol Yield Optimization
+```
+User: "Find the best yields for my USDC across all lending protocols"
+
+Agent:
+1. Uses get_best_lending_rates to compare all protocols
+2. Shows Joule Finance vs Aries Finance rates
+3. Factors in additional rewards and risks
+4. Executes optimal allocation across protocols
+```
+
+### DEX Aggregation for Best Rates
+```
+User: "Swap 1000 USDC for APT using the best available rate"
+
+Agent:
+1. Uses get_panora_quote to get aggregated pricing
+2. Compares with direct Liquidswap rates
+3. Uses swap_with_panora for optimal execution
+4. Shows savings compared to single DEX
 ```
 
 ### Complete Lending Workflow
@@ -152,18 +245,6 @@ Agent:
 4. Provides ongoing pool management recommendations
 ```
 
-### Move Development Workflow
-```
-User: "Create a new Move project called 'my_defi_protocol'"
-Agent: Uses aptos_cli_move_init to create project structure
-
-User: "Compile and test my contract in ./contracts/"
-Agent: Uses aptos_cli_move_compile and aptos_cli_move_test to build and validate code
-
-User: "Deploy to testnet with named address myaddr=0x123..."
-Agent: Uses aptos_cli_move_publish with proper configuration
-```
-
 ### Comprehensive Staking Strategy
 ```
 User: "What are the best staking options for my 1000 APT?"
@@ -177,6 +258,12 @@ Agent:
 
 ## Protocol Integrations
 
+### Universal Pool Discovery
+- **Cross-protocol pool listing** across all major DeFi protocols
+- **Real-time rate comparison** for optimal yield farming
+- **Token discovery** with comprehensive search functionality
+- **Liquidity analysis** across all DEX protocols
+
 ### Liquidswap DEX
 - **Complete trading functionality** with optimal routing
 - **Advanced liquidity management** with fee optimization
@@ -189,11 +276,35 @@ Agent:
 - **Automated reward claiming** and compound strategies
 - **Risk management** with health ratio monitoring
 
+### Aries Finance
+- **Alternative lending platform** for diversified yield
+- **Profile-based lending** with customized parameters
+- **Cross-protocol arbitrage** opportunities
+- **Advanced risk management** tools
+
+### MerkleTrade
+- **Perpetual futures trading** with leverage
+- **Advanced order types** (market, limit, stop-loss)
+- **Real-time position monitoring** and risk management
+- **Professional trading interface** for active traders
+
+### Panora Exchange
+- **DEX aggregation** for optimal swap rates
+- **Cross-protocol liquidity** access
+- **Minimal slippage** through intelligent routing
+- **Best price discovery** across all DEXes
+
 ### Thala Finance
 - **Liquid staking** - Keep liquidity while earning staking rewards
 - **MOD stablecoin** - Collateralized debt position management
 - **Yield optimization** through liquid staking derivatives
 - **Advanced DeFi composability** with other protocols
+
+### Cross-Protocol Features
+- **Unified portfolio tracking** across all protocols
+- **Risk assessment** with comprehensive analytics
+- **Yield optimization** strategies
+- **Position rebalancing** recommendations
 
 ### Native Aptos Staking
 - **Validator selection** with AI-driven recommendations

@@ -16,14 +16,46 @@ import {
     JouleWithdrawTool,
     JouleGetPositionTool,
     JouleGetAllPositionsTool,
-    JouleClaimRewardTool
+    JouleClaimRewardTool,
+    JouleListPoolsTool
 } from "./joule/joule-tools";
 import { 
     ThalaStakeTool, 
     ThalaUnstakeTool, 
     ThalaMintModTool, 
     ThalaRedeemModTool 
-} from "./thala/thala-tools"; 
+} from "./thala/thala-tools";
+import {
+    ListJoulePoolsTool,
+    ListLiquidswapPoolsTool,
+    GetLiquidswapPoolInfoTool,
+    ListThalaPoolsTool,
+    ListAllSupportedTokensTool,
+    SearchTokensTool,
+    GetBestLendingRatesTool,
+    GetAllLiquidityPoolsTool
+} from "./discovery-tools";
+import {
+    CreateAriesProfileTool,
+    LendOnAriesTool,
+    BorrowOnAriesTool,
+    RepayOnAriesTool,
+    WithdrawFromAriesTool
+} from "./aries/aries-tools";
+import {
+    PlaceMerkleMarketOrderTool,
+    PlaceMerkleLimitOrderTool,
+    CloseMerklePositionTool,
+    GetMerklePositionsTool
+} from "./merkletrade/merkletrade-tools";
+import {
+    SwapWithPanoraTool,
+    GetPanoraQuoteTool
+} from "./panora/panora-tools";
+import {
+    GetAllUserPositionsTool,
+    GetUserPortfolioSummaryTool
+} from "./portfolio-tools"; 
 
 export const AptosMcpTools = {
     // Core Aptos Tools
@@ -54,10 +86,42 @@ export const AptosMcpTools = {
     "JouleGetPositionTool": JouleGetPositionTool,
     "JouleGetAllPositionsTool": JouleGetAllPositionsTool,
     "JouleClaimRewardTool": JouleClaimRewardTool,
+    "JouleListPoolsTool": JouleListPoolsTool,
     
     // Thala Finance - Liquid Staking & Stable Coin
     "ThalaStakeTool": ThalaStakeTool,
     "ThalaUnstakeTool": ThalaUnstakeTool,
     "ThalaMintModTool": ThalaMintModTool,
-    "ThalaRedeemModTool": ThalaRedeemModTool, 
+    "ThalaRedeemModTool": ThalaRedeemModTool,
+    
+    // Pool Discovery & Token Listing Tools
+    "ListJoulePoolsTool": ListJoulePoolsTool,
+    "ListLiquidswapPoolsTool": ListLiquidswapPoolsTool,
+    "GetLiquidswapPoolInfoTool": GetLiquidswapPoolInfoTool,
+    "ListThalaPoolsTool": ListThalaPoolsTool,
+    "ListAllSupportedTokensTool": ListAllSupportedTokensTool,
+    "SearchTokensTool": SearchTokensTool,
+    "GetBestLendingRatesTool": GetBestLendingRatesTool,
+    "GetAllLiquidityPoolsTool": GetAllLiquidityPoolsTool,
+    
+    // Aries Finance - Lending Protocol
+    "CreateAriesProfileTool": CreateAriesProfileTool,
+    "LendOnAriesTool": LendOnAriesTool,
+    "BorrowOnAriesTool": BorrowOnAriesTool,
+    "RepayOnAriesTool": RepayOnAriesTool,
+    "WithdrawFromAriesTool": WithdrawFromAriesTool,
+    
+    // MerkleTrade - Perpetual Trading
+    "PlaceMerkleMarketOrderTool": PlaceMerkleMarketOrderTool,
+    "PlaceMerkleLimitOrderTool": PlaceMerkleLimitOrderTool,
+    "CloseMerklePositionTool": CloseMerklePositionTool,
+    "GetMerklePositionsTool": GetMerklePositionsTool,
+    
+    // Panora - DEX Aggregator
+    "SwapWithPanoraTool": SwapWithPanoraTool,
+    "GetPanoraQuoteTool": GetPanoraQuoteTool,
+    
+    // Portfolio & Cross-Protocol Tools
+    "GetAllUserPositionsTool": GetAllUserPositionsTool,
+    "GetUserPortfolioSummaryTool": GetUserPortfolioSummaryTool,
 }
