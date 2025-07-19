@@ -18,6 +18,12 @@ import {
     calculateValidatorAPY,
     getValidatorsForStaking
 } from "../../tools/validators/rewards-calculator";
+import {
+    getAptosName,
+    getBatchAptosNames,
+    getValidatorDisplayName,
+    isOperatorWithName
+} from "../../tools/validators/address-names";
 
 // Core Validator Information Tools
 export const ListValidatorsTool: McpTool = {
@@ -264,6 +270,84 @@ export const GetStakingOverviewTool: McpTool = {
     }
 };
 
+// Address and Name Resolution Tools
+export const GetAptosNameTool: McpTool = {
+    name: "aptos_get_aptos_name",
+    description: "Convert an Aptos address to its registered .apt name",
+    schema: {
+        address: z.string().describe("Aptos address to resolve to name")
+    },
+    handler: async (agent: AptosAgent, input: Record<string, any>) => {
+        try {
+            return await getAptosName(agent, input.address);
+        } catch (error: any) {
+            throw new Error(`Failed to get Aptos name: ${error.message}`);
+        }
+    }
+};
+
+export const GetBatchAptosNamesTool: McpTool = {
+    name: "aptos_get_batch_aptos_names",
+    description: "Convert multiple Aptos addresses to their registered .apt names",
+    schema: {
+        addresses: z.array(z.string()).describe("Array of Aptos addresses to resolve")
+    },
+    handler: async (agent: AptosAgent, input: Record<string, any>) => {
+        try {
+            const nameMap = await getBatchAptosNames(agent, input.addresses);
+            // Convert Map to object for JSON serialization
+            const result: Record<string, any> = {};
+            for (const [address, nameInfo] of nameMap.entries()) {
+                result[address] = nameInfo;
+            }
+            return result;
+        } catch (error: any) {
+            throw new Error(`Failed to get batch Aptos names: ${error.message}`);
+        }
+    }
+};
+
+export const GetValidatorDisplayNameTool: McpTool = {
+    name: "aptos_get_validator_display_name",
+    description: "Get the best display name for a validator (uses operator name if available)",
+    schema: {
+        validatorAddress: z.string().describe("Validator address"),
+        operatorAddress: z.string().optional().describe("Operator address (optional)")
+    },
+    handler: async (agent: AptosAgent, input: Record<string, any>) => {
+        try {
+            return await getValidatorDisplayName(
+                agent,
+                input.validatorAddress,
+                input.operatorAddress
+            );
+        } catch (error: any) {
+            throw new Error(`Failed to get validator display name: ${error.message}`);
+        }
+    }
+};
+
+export const CheckOperatorNameTool: McpTool = {
+    name: "aptos_check_operator_name",
+    description: "Check if an address has a registered .apt name (useful for identifying named operators)",
+    schema: {
+        address: z.string().describe("Address to check for registered name")
+    },
+    handler: async (agent: AptosAgent, input: Record<string, any>) => {
+        try {
+            const hasName = await isOperatorWithName(agent, input.address);
+            const nameInfo = await getAptosName(agent, input.address);
+            return {
+                address: input.address,
+                ...nameInfo,
+                hasName
+            };
+        } catch (error: any) {
+            throw new Error(`Failed to check operator name: ${error.message}`);
+        }
+    }
+};
+
 // Export all validator tools for MCP index
 export const ValidatorMcpTools = {
     // Validator Information Tools
@@ -271,16 +355,22 @@ export const ValidatorMcpTools = {
     "GetValidatorInfoTool": GetValidatorInfoTool,
     "GetTopValidatorsTool": GetTopValidatorsTool,
     "GetValidatorPerformanceTool": GetValidatorPerformanceTool,
-    
+
     // Delegation Pool Information Tools  
     "GetDelegationPoolInfoTool": GetDelegationPoolInfoTool,
     "GetDelegationPoolCommissionTool": GetDelegationPoolCommissionTool,
     "GetUserDelegationTool": GetUserDelegationTool,
     "GetPendingWithdrawalsTool": GetPendingWithdrawalsTool,
     "CheckDelegationPoolTool": CheckDelegationPoolTool,
-    
+
     // Analysis and Calculation Tools
     "CalculateValidatorAPYTool": CalculateValidatorAPYTool,
     "GetValidatorsForStakingTool": GetValidatorsForStakingTool,
-    "GetStakingOverviewTool": GetStakingOverviewTool
+    "GetStakingOverviewTool": GetStakingOverviewTool,
+
+    // Address and Name Resolution Tools
+    "GetAptosNameTool": GetAptosNameTool,
+    "GetBatchAptosNamesTool": GetBatchAptosNamesTool,
+    "GetValidatorDisplayNameTool": GetValidatorDisplayNameTool,
+    "CheckOperatorNameTool": CheckOperatorNameTool
 };
