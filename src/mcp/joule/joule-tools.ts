@@ -6,13 +6,13 @@ import { listAllJoulePools } from "../../tools/joule/list-all-pools";
 export const JouleLendTool: McpTool = {
     name: "aptos_joule_lend",
     description: "Lend tokens to Joule Finance to earn interest",
-    schema: z.object({
+    schema: {
         amount: z.number().positive().describe("Amount to lend"),
         mint: z.string().describe("Token type to lend"),
         positionId: z.string().describe("Position ID (use 'new' for new position)"),
         newPosition: z.boolean().optional().default(false).describe("Whether to create a new position"),
         fungibleAsset: z.boolean().optional().default(false).describe("Whether token is a fungible asset")
-    }),
+    },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
             const result = await agent.jouleLend(
@@ -35,12 +35,12 @@ export const JouleLendTool: McpTool = {
 export const JouleBorrowTool: McpTool = {
     name: "aptos_joule_borrow",
     description: "Borrow tokens from Joule Finance against collateral",
-    schema: z.object({
+    schema: {
         amount: z.number().positive().describe("Amount to borrow"),
         mint: z.string().describe("Token type to borrow"),
         positionId: z.string().describe("Position ID to borrow from"),
         fungibleAsset: z.boolean().optional().default(false).describe("Whether token is a fungible asset")
-    }),
+    },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
             const result = await agent.jouleBorrow(
@@ -62,12 +62,12 @@ export const JouleBorrowTool: McpTool = {
 export const JouleRepayTool: McpTool = {
     name: "aptos_joule_repay",
     description: "Repay borrowed tokens to Joule Finance",
-    schema: z.object({
+    schema: {
         amount: z.number().positive().describe("Amount to repay"),
         mint: z.string().describe("Token type to repay"),
         positionId: z.string().describe("Position ID to repay to"),
         fungibleAsset: z.boolean().optional().default(false).describe("Whether token is a fungible asset")
-    }),
+    },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
             const result = await agent.jouleRepay(
@@ -89,12 +89,12 @@ export const JouleRepayTool: McpTool = {
 export const JouleWithdrawTool: McpTool = {
     name: "aptos_joule_withdraw",
     description: "Withdraw lent tokens from Joule Finance",
-    schema: z.object({
+    schema: {
         amount: z.number().positive().describe("Amount to withdraw"),
         mint: z.string().describe("Token type to withdraw"),
         positionId: z.string().describe("Position ID to withdraw from"),
         fungibleAsset: z.boolean().optional().default(false).describe("Whether token is a fungible asset")
-    }),
+    },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
             const result = await agent.jouleWithdraw(
@@ -116,9 +116,9 @@ export const JouleWithdrawTool: McpTool = {
 export const JouleGetPositionTool: McpTool = {
     name: "aptos_joule_get_position",
     description: "Get details about a specific Joule Finance position",
-    schema: z.object({
+    schema: {
         positionId: z.string().describe("Position ID to query")
-    }),
+    },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
             const result = await agent.jouleGetPosition(input.positionId);
@@ -135,7 +135,7 @@ export const JouleGetPositionTool: McpTool = {
 export const JouleGetAllPositionsTool: McpTool = {
     name: "aptos_joule_get_all_positions",
     description: "Get all Joule Finance positions for the current user",
-    schema: z.object({}),
+    schema: {},
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
             const result = await agent.jouleGetAllPositions();
@@ -152,9 +152,9 @@ export const JouleGetAllPositionsTool: McpTool = {
 export const JouleClaimRewardTool: McpTool = {
     name: "aptos_joule_claim_reward",
     description: "Claim lending rewards from Joule Finance",
-    schema: z.object({
+    schema: {
         positionId: z.string().describe("Position ID to claim rewards from")
-    }),
+    },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
             const result = await agent.jouleClaimReward(input.positionId);
@@ -171,7 +171,7 @@ export const JouleClaimRewardTool: McpTool = {
 export const JouleListPoolsTool: McpTool = {
     name: "aptos_joule_list_pools",
     description: "List all available lending pools on Joule Finance with APY and liquidity information",
-    schema: z.object({}),
+    schema: {},
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
             const result = await listAllJoulePools();

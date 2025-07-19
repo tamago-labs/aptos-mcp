@@ -1,12 +1,11 @@
 import type { AptosAgent } from "../../agent";
 import { getValidatorInfo } from "./list-validators";
-import { getTopValidators, ValidatorAnalysis } from "./analyze-validators";
+import { getTopValidators } from "./analyze-validators";
 import { getDelegationPoolCommission, hasDelegationPool } from "./delegation-pools";
 import { 
     getValidatorDisplayName, 
-    getBatchAptosNames, 
     ValidatorWithNames, 
-    AptosNameInfo 
+    formatAddressForDisplay
 } from "./address-names";
 
 export interface ValidatorRewardsCalculation {
@@ -76,58 +75,80 @@ export async function calculateValidatorAPY(
 }
 
 /**
- * Get validators optimized for staking with names (best for delegators)
+ * Simplified version of getValidatorsForStaking with better error handling
  */
 export async function getValidatorsForStaking(
     agent: AptosAgent,
     limit: number = 20
 ): Promise<ValidatorWithNames[]> {
     try {
-        const topValidators = await getTopValidators(agent, limit * 2, 'success_rate');
+        // Step 1: Get top validators (this should work)
+        const topValidators = await getTopValidators(agent, Math.min(limit * 2, 50), 'success_rate');
         const stakingValidators: ValidatorWithNames[] = [];
 
+        // Step 2: Process each validator with maximum error resilience
         for (const validator of topValidators) {
+            if (stakingValidators.length >= limit) break;
+            
             try {
-                // Check if validator has delegation pool
-                const hasDelegationPoolAvailable = await hasDelegationPool(agent, validator.address);
+                // Default values
+                let hasActiveDelegationPool = false;
                 let commission = 0;
-
-                if (hasDelegationPoolAvailable) {
-                    try {
+                let displayName = formatAddressForDisplay(validator.address);
+                let isNamedOperator = false;
+                let operatorName;
+                
+                // Try to check delegation pool
+                try {
+                    hasActiveDelegationPool = await hasDelegationPool(agent, validator.address);
+                    if (hasActiveDelegationPool) {
                         const commissionInfo = await getDelegationPoolCommission(agent, validator.address);
                         commission = commissionInfo.operatorCommissionPercentage;
-                    } catch (e) {
-                        // Commission info might not be available
                     }
+                } catch (e) {
+                    // Ignore delegation pool errors, use defaults
                 }
 
-                // Get validator info to find operator address
-                const { stake } = await getValidatorInfo(agent, validator.address);
-                const operatorAddress = stake.operatorAddress;
+                // Try to get display name
+                try {
+                    const { stake } = await getValidatorInfo(agent, validator.address);
+                    const operatorAddress = stake.operatorAddress;
+                    
+                    const nameInfo = await getValidatorDisplayName(
+                        agent, 
+                        validator.address, 
+                        operatorAddress
+                    );
+                    
+                    displayName = nameInfo.bestDisplayName;
+                    isNamedOperator = nameInfo.isNamedOperator;
+                    operatorName = nameInfo.operatorName;
+                } catch (e) {
+                    // Ignore name resolution errors, use defaults
+                }
 
-                // Get display names
-                const nameInfo = await getValidatorDisplayName(
-                    agent, 
-                    validator.address, 
-                    operatorAddress
-                );
-
+                // Build result with fallback values
                 stakingValidators.push({
                     address: validator.address,
-                    displayName: nameInfo.bestDisplayName,
-                    validatorName: nameInfo.validatorName,
-                    operatorName: nameInfo.operatorName,
-                    isNamedOperator: nameInfo.isNamedOperator,
+                    displayName,
+                    validatorName: {
+                        name: null,
+                        fullName: null,
+                        hasName: false,
+                        displayAddress: displayName
+                    },
+                    operatorName,
+                    isNamedOperator,
                     votingPower: validator.votingPower,
                     apy: validator.apy,
                     successRate: validator.successRate,
                     commission,
-                    hasActiveDelegationPool: hasDelegationPoolAvailable
+                    hasActiveDelegationPool
                 });
 
-                if (stakingValidators.length >= limit) break;
             } catch (error) {
-                console.warn(`Failed to get delegation info for validator ${validator.address}:`, error);
+                // Skip this validator and continue
+                console.warn(`Skipping validator ${validator.address}: ${error}`);
                 continue;
             }
         }
@@ -140,6 +161,7 @@ export async function getValidatorsForStaking(
         });
 
         return stakingValidators.slice(0, limit);
+        
     } catch (error: any) {
         throw new Error(`Failed to get validators for staking: ${error.message}`);
     }
