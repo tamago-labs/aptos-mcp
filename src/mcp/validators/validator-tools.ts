@@ -11,7 +11,6 @@ import {
     getDelegationPoolInfo,
     getDelegationPoolCommission,
     getUserDelegation,
-    getPendingWithdrawals,
     hasDelegationPool
 } from "../../tools/validators/delegation-pools";
 import {
@@ -20,37 +19,28 @@ import {
 } from "../../tools/validators/rewards-calculator";
 import {
     getAptosName,
-    getBatchAptosNames,
-    getValidatorDisplayName,
-    isOperatorWithName
+    getValidatorDisplayNameDirect
 } from "../../tools/validators/address-names";
 
-// Core Validator Information Tools
+// ============================================================================
+// CORE VALIDATOR TOOLS (Essential)
+// ============================================================================
+
 export const ListValidatorsTool: McpTool = {
     name: "aptos_list_validators",
     description: "List all validators in the Aptos network with their current status and information",
     schema: {
         limit: z.number().optional().default(50).describe("Maximum number of validators to return"),
-        activeOnly: z.boolean().optional().default(true).describe("Show only active validators"),
-        includeDetails: z.boolean().optional().default(false).describe("Include detailed stake and reward information")
+        activeOnly: z.boolean().optional().default(true).describe("Show only active validators")
     },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
-            if (input.includeDetails) { 
-                const topValidators = await getTopValidators(
-                    agent, 
-                    input.limit || 50, 
-                    'voting_power'
-                );
-                return topValidators;
-            } else { 
-                const validators = await getAllValidators(agent);
-                const filteredValidators = input.activeOnly 
-                    ? validators.filter(v => v.isActive)
-                    : validators;
-                
-                return filteredValidators.slice(0, input.limit || 50);
-            } 
+            const validators = await getAllValidators(agent);
+            const filteredValidators = input.activeOnly 
+                ? validators.filter(v => v.isActive)
+                : validators;
+            
+            return filteredValidators.slice(0, input.limit || 50);
         } catch (error: any) {
             throw new Error(`Failed to list validators: ${error.message}`);
         }
@@ -92,22 +82,47 @@ export const GetTopValidatorsTool: McpTool = {
     }
 };
 
-export const GetValidatorPerformanceTool: McpTool = {
-    name: "aptos_get_validator_performance",
-    description: "Get performance metrics for a specific validator including proposal success rate and estimated APY",
+export const GetValidatorsForStakingTool: McpTool = {
+    name: "aptos_get_validators_for_staking",
+    description: "Get the best validators optimized for delegated staking with operator names and commission rates",
     schema: {
-        validatorAddress: z.string().describe("Validator address to get performance for")
+        limit: z.number().optional().default(20).describe("Number of validators to return")
     },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
-            return await getValidatorPerformance(agent, input.validatorAddress);
+            return await getValidatorsForStaking(agent, input.limit || 20);
         } catch (error: any) {
-            throw new Error(`Failed to get validator performance: ${error.message}`);
+            throw new Error(`Failed to get validators for staking: ${error.message}`);
         }
     }
 };
 
-// Delegation Pool Information Tools
+// ============================================================================
+// STREAMLINED VALIDATOR DISPLAY NAME TOOL (One-Step Solution)
+// ============================================================================
+
+/**
+ * One-step tool that gets validator info and resolves operator display name
+ */
+export const GetValidatorDisplayNameDirectTool: McpTool = {
+    name: "aptos_get_validator_display_name_direct",
+    description: "Get validator display name in one step - automatically fetches operator address and resolves to .apt name",
+    schema: {
+        validatorAddress: z.string().describe("Validator address to get display name for")
+    },
+    handler: async (agent: AptosAgent, input: Record<string, any>) => {
+        try {
+            return await getValidatorDisplayNameDirect(agent, input.validatorAddress);
+        } catch (error: any) {
+            throw new Error(`Failed to get validator display name: ${error.message}`);
+        }
+    }
+};
+
+// ============================================================================
+// DELEGATION POOL TOOLS (Essential for Staking)
+// ============================================================================
+
 export const GetDelegationPoolInfoTool: McpTool = {
     name: "aptos_get_delegation_pool_info",
     description: "Get information about a delegation pool including commission rates and total stake",
@@ -119,53 +134,6 @@ export const GetDelegationPoolInfoTool: McpTool = {
             return await getDelegationPoolInfo(agent, input.poolAddress);
         } catch (error: any) {
             throw new Error(`Failed to get delegation pool info: ${error.message}`);
-        }
-    }
-};
-
-export const GetDelegationPoolCommissionTool: McpTool = {
-    name: "aptos_get_delegation_pool_commission",
-    description: "Get commission information for a delegation pool",
-    schema: {
-        poolAddress: z.string().describe("Delegation pool address")
-    },
-    handler: async (agent: AptosAgent, input: Record<string, any>) => {
-        try {
-            return await getDelegationPoolCommission(agent, input.poolAddress);
-        } catch (error: any) {
-            throw new Error(`Failed to get delegation pool commission: ${error.message}`);
-        }
-    }
-};
-
-export const GetUserDelegationTool: McpTool = {
-    name: "aptos_get_user_delegation",
-    description: "Get user's delegation information in a specific pool",
-    schema: {
-        poolAddress: z.string().describe("Delegation pool address"),
-        userAddress: z.string().optional().describe("User address (defaults to current account)")
-    },
-    handler: async (agent: AptosAgent, input: Record<string, any>) => {
-        try {
-            return await getUserDelegation(agent, input.poolAddress, input.userAddress);
-        } catch (error: any) {
-            throw new Error(`Failed to get user delegation: ${error.message}`);
-        }
-    }
-};
-
-export const GetPendingWithdrawalsTool: McpTool = {
-    name: "aptos_get_pending_withdrawals",
-    description: "Get pending withdrawals from a delegation pool",
-    schema: {
-        poolAddress: z.string().describe("Delegation pool address"),
-        userAddress: z.string().optional().describe("User address (defaults to current account)")
-    },
-    handler: async (agent: AptosAgent, input: Record<string, any>) => {
-        try {
-            return await getPendingWithdrawals(agent, input.poolAddress, input.userAddress);
-        } catch (error: any) {
-            throw new Error(`Failed to get pending withdrawals: ${error.message}`);
         }
     }
 };
@@ -192,36 +160,9 @@ export const CheckDelegationPoolTool: McpTool = {
     }
 };
 
-// Analysis and Calculation Tools
-export const CalculateValidatorAPYTool: McpTool = {
-    name: "aptos_calculate_validator_apy",
-    description: "Calculate detailed APY and rewards information for a validator",
-    schema: {
-        validatorAddress: z.string().describe("Validator address to calculate APY for")
-    },
-    handler: async (agent: AptosAgent, input: Record<string, any>) => {
-        try {
-            return await calculateValidatorAPY(agent, input.validatorAddress);
-        } catch (error: any) {
-            throw new Error(`Failed to calculate validator APY: ${error.message}`);
-        }
-    }
-};
-
-export const GetValidatorsForStakingTool: McpTool = {
-    name: "aptos_get_validators_for_staking",
-    description: "Get the best validators optimized for delegated staking with commission rates and delegation pool info",
-    schema: {
-        limit: z.number().optional().default(20).describe("Number of validators to return")
-    },
-    handler: async (agent: AptosAgent, input: Record<string, any>) => {
-        try {
-            return await getValidatorsForStaking(agent, input.limit || 20);
-        } catch (error: any) {
-            throw new Error(`Failed to get validators for staking: ${error.message}`);
-        }
-    }
-};
+// ============================================================================
+// ECOSYSTEM OVERVIEW TOOL
+// ============================================================================
 
 export const GetStakingOverviewTool: McpTool = {
     name: "aptos_get_staking_overview",
@@ -230,11 +171,12 @@ export const GetStakingOverviewTool: McpTool = {
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
             // Get validator set
-            const validatorSetData = await agent.aptos.getAccountResource({
+            const validatorSet = await agent.aptos.getAccountResource({
                 accountAddress: "0x1",
                 resourceType: "0x1::stake::ValidatorSet",
             });
 
+            const validatorSetData = validatorSet.data as any;
             const activeValidators = validatorSetData.active_validators || [];
             const totalVotingPower = validatorSetData.total_voting_power || "0";
 
@@ -270,7 +212,10 @@ export const GetStakingOverviewTool: McpTool = {
     }
 };
 
-// Address and Name Resolution Tools
+// ============================================================================
+// SIMPLE NAME RESOLUTION TOOL (For General Use)
+// ============================================================================
+
 export const GetAptosNameTool: McpTool = {
     name: "aptos_get_aptos_name",
     description: "Convert an Aptos address to its registered .apt name",
@@ -286,91 +231,41 @@ export const GetAptosNameTool: McpTool = {
     }
 };
 
-export const GetBatchAptosNamesTool: McpTool = {
-    name: "aptos_get_batch_aptos_names",
-    description: "Convert multiple Aptos addresses to their registered .apt names",
-    schema: {
-        addresses: z.array(z.string()).describe("Array of Aptos addresses to resolve")
-    },
-    handler: async (agent: AptosAgent, input: Record<string, any>) => {
-        try {
-            const nameMap = await getBatchAptosNames(agent, input.addresses);
-            // Convert Map to object for JSON serialization
-            const result: Record<string, any> = {};
-            for (const [address, nameInfo] of nameMap.entries()) {
-                result[address] = nameInfo;
-            }
-            return result;
-        } catch (error: any) {
-            throw new Error(`Failed to get batch Aptos names: ${error.message}`);
-        }
-    }
-};
+// ============================================================================
+// EXPORT STREAMLINED TOOLS (Only Essential Ones)
+// ============================================================================
 
-export const GetValidatorDisplayNameTool: McpTool = {
-    name: "aptos_get_validator_display_name",
-    description: "Get the best display name for a validator (uses operator name if available)",
-    schema: {
-        validatorAddress: z.string().describe("Validator address"),
-        operatorAddress: z.string().optional().describe("Operator address (optional)")
-    },
-    handler: async (agent: AptosAgent, input: Record<string, any>) => {
-        try {
-            return await getValidatorDisplayName(
-                agent,
-                input.validatorAddress,
-                input.operatorAddress
-            );
-        } catch (error: any) {
-            throw new Error(`Failed to get validator display name: ${error.message}`);
-        }
-    }
-};
-
-export const CheckOperatorNameTool: McpTool = {
-    name: "aptos_check_operator_name",
-    description: "Check if an address has a registered .apt name (useful for identifying named operators)",
-    schema: {
-        address: z.string().describe("Address to check for registered name")
-    },
-    handler: async (agent: AptosAgent, input: Record<string, any>) => {
-        try {
-            const hasName = await isOperatorWithName(agent, input.address);
-            const nameInfo = await getAptosName(agent, input.address);
-            return {
-                address: input.address,
-                ...nameInfo,
-                hasName
-            };
-        } catch (error: any) {
-            throw new Error(`Failed to check operator name: ${error.message}`);
-        }
-    }
-};
-
-// Export all validator tools for MCP index
 export const ValidatorMcpTools = {
-    // Validator Information Tools
+    // Core Validator Tools (Essential)
     "ListValidatorsTool": ListValidatorsTool,
     "GetValidatorInfoTool": GetValidatorInfoTool,
     "GetTopValidatorsTool": GetTopValidatorsTool,
-    "GetValidatorPerformanceTool": GetValidatorPerformanceTool,
-
-    // Delegation Pool Information Tools  
-    "GetDelegationPoolInfoTool": GetDelegationPoolInfoTool,
-    "GetDelegationPoolCommissionTool": GetDelegationPoolCommissionTool,
-    "GetUserDelegationTool": GetUserDelegationTool,
-    "GetPendingWithdrawalsTool": GetPendingWithdrawalsTool,
-    "CheckDelegationPoolTool": CheckDelegationPoolTool,
-
-    // Analysis and Calculation Tools
-    "CalculateValidatorAPYTool": CalculateValidatorAPYTool,
     "GetValidatorsForStakingTool": GetValidatorsForStakingTool,
+    
+    // One-Step Display Name Tool (NEW - Streamlined)
+    "GetValidatorDisplayNameDirectTool": GetValidatorDisplayNameDirectTool,
+    
+    // Delegation Pool Tools (Essential for Staking)
+    "GetDelegationPoolInfoTool": GetDelegationPoolInfoTool,
+    "CheckDelegationPoolTool": CheckDelegationPoolTool,
+    
+    // Ecosystem Overview
     "GetStakingOverviewTool": GetStakingOverviewTool,
-
-    // Address and Name Resolution Tools
-    "GetAptosNameTool": GetAptosNameTool,
-    "GetBatchAptosNamesTool": GetBatchAptosNamesTool,
-    "GetValidatorDisplayNameTool": GetValidatorDisplayNameTool,
-    "CheckOperatorNameTool": CheckOperatorNameTool
+    
+    // Simple Name Resolution
+    "GetAptosNameTool": GetAptosNameTool
 };
+
+/*
+REMOVED TOOLS (Not Essential):
+- GetValidatorPerformanceTool (redundant with GetValidatorInfoTool)
+- GetDelegationPoolCommissionTool (included in GetDelegationPoolInfoTool)
+- GetUserDelegationTool (specific use case, not core)
+- GetPendingWithdrawalsTool (specific use case, not core)
+- CalculateValidatorAPYTool (complex, covered by GetValidatorsForStakingTool)
+- GetBatchAptosNamesTool (batch processing, not core)
+- GetValidatorDisplayNameTool (replaced by GetValidatorDisplayNameDirectTool)
+- CheckOperatorNameTool (covered by GetAptosNameTool)
+
+STREAMLINED TO 9 ESSENTIAL TOOLS (from 15)
+*/

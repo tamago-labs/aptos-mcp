@@ -9,6 +9,22 @@ export interface AptosNameInfo {
 }
 
 /**
+ * Enhanced validator info with names
+ */
+export interface ValidatorWithNames {
+    address: string;
+    displayName: string;
+    validatorName: AptosNameInfo;
+    operatorName?: AptosNameInfo;
+    isNamedOperator: boolean;
+    votingPower: string;
+    apy: number;
+    successRate: number;
+    commission: number;
+    hasActiveDelegationPool: boolean;
+}
+
+/**
  * Convert an address to its Aptos name using the AptosNames API
  */
 export async function getAptosName(
@@ -176,17 +192,60 @@ export async function getValidatorDisplayName(
 }
 
 /**
- * Enhanced validator info with names
+ * One-step function to get validator display name (combines both steps)
  */
-export interface ValidatorWithNames {
-    address: string;
+export async function getValidatorDisplayNameDirect(
+    agent: AptosAgent,
+    validatorAddress: string
+): Promise<{
+    validatorAddress: string;
+    operatorAddress: string;
     displayName: string;
+    isNamedOperator: boolean;
     validatorName: AptosNameInfo;
     operatorName?: AptosNameInfo;
-    isNamedOperator: boolean;
-    votingPower: string;
-    apy: number;
-    successRate: number;
-    commission: number;
-    hasActiveDelegationPool: boolean;
+}> {
+    try {
+        // Step 1: Get validator info to find operator address
+        const validatorInfo = await agent.aptos.view({
+            payload: {
+                function: "0x1::stake::get_operator",
+                typeArguments: [],
+                functionArguments: [validatorAddress],
+            },
+        });
+        
+        const operatorAddress = validatorInfo[0]?.toString() || validatorAddress;
+        
+        // Step 2: Get display name using operator address
+        const nameInfo = await getValidatorDisplayName(
+            agent,
+            validatorAddress,
+            operatorAddress
+        );
+        
+        return {
+            validatorAddress,
+            operatorAddress,
+            displayName: nameInfo.bestDisplayName,
+            isNamedOperator: nameInfo.isNamedOperator,
+            validatorName: nameInfo.validatorName,
+            operatorName: nameInfo.operatorName
+        };
+    } catch (error: any) {
+        // Fallback to formatted address if everything fails
+        const fallbackDisplay = formatAddressForDisplay(validatorAddress);
+        return {
+            validatorAddress,
+            operatorAddress: validatorAddress,
+            displayName: fallbackDisplay,
+            isNamedOperator: false,
+            validatorName: {
+                name: null,
+                fullName: null,
+                hasName: false,
+                displayAddress: fallbackDisplay
+            }
+        };
+    }
 }

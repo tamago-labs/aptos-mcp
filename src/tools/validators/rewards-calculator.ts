@@ -2,6 +2,12 @@ import type { AptosAgent } from "../../agent";
 import { getValidatorInfo } from "./list-validators";
 import { getTopValidators, ValidatorAnalysis } from "./analyze-validators";
 import { getDelegationPoolCommission, hasDelegationPool } from "./delegation-pools";
+import { 
+    getValidatorDisplayName, 
+    getBatchAptosNames, 
+    ValidatorWithNames, 
+    AptosNameInfo 
+} from "./address-names";
 
 export interface ValidatorRewardsCalculation {
     currentEpochRewards: string;
@@ -70,30 +76,23 @@ export async function calculateValidatorAPY(
 }
 
 /**
- * Get validators optimized for staking (best for delegators)
+ * Get validators optimized for staking with names (best for delegators)
  */
 export async function getValidatorsForStaking(
     agent: AptosAgent,
     limit: number = 20
-): Promise<Array<ValidatorAnalysis & {
-    delegationPoolAddress: string | null;
-    commission: number;
-    minimumStake: string;
-    hasActiveDelegationPool: boolean;
-}>> {
+): Promise<ValidatorWithNames[]> {
     try {
         const topValidators = await getTopValidators(agent, limit * 2, 'success_rate');
-        const stakingValidators = [];
+        const stakingValidators: ValidatorWithNames[] = [];
 
         for (const validator of topValidators) {
             try {
                 // Check if validator has delegation pool
                 const hasDelegationPoolAvailable = await hasDelegationPool(agent, validator.address);
                 let commission = 0;
-                let delegationPoolAddress = null;
 
                 if (hasDelegationPoolAvailable) {
-                    delegationPoolAddress = validator.address;
                     try {
                         const commissionInfo = await getDelegationPoolCommission(agent, validator.address);
                         commission = commissionInfo.operatorCommissionPercentage;
@@ -102,11 +101,27 @@ export async function getValidatorsForStaking(
                     }
                 }
 
+                // Get validator info to find operator address
+                const { stake } = await getValidatorInfo(agent, validator.address);
+                const operatorAddress = stake.operatorAddress;
+
+                // Get display names
+                const nameInfo = await getValidatorDisplayName(
+                    agent, 
+                    validator.address, 
+                    operatorAddress
+                );
+
                 stakingValidators.push({
-                    ...validator,
-                    delegationPoolAddress,
+                    address: validator.address,
+                    displayName: nameInfo.bestDisplayName,
+                    validatorName: nameInfo.validatorName,
+                    operatorName: nameInfo.operatorName,
+                    isNamedOperator: nameInfo.isNamedOperator,
+                    votingPower: validator.votingPower,
+                    apy: validator.apy,
+                    successRate: validator.successRate,
                     commission,
-                    minimumStake: "11000000", // 0.11 APT minimum for delegation pools
                     hasActiveDelegationPool: hasDelegationPoolAvailable
                 });
 
