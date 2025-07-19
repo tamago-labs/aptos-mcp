@@ -30,7 +30,7 @@ export const ListValidatorsTool: McpTool = {
     name: "aptos_list_validators",
     description: "List all validators in the Aptos network with their current status and information",
     schema: {
-        limit: z.number().optional().default(50).describe("Maximum number of validators to return"),
+        limit: z.number().optional().default(5).describe("Maximum number of validators to return"),
         activeOnly: z.boolean().optional().default(true).describe("Show only active validators")
     },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
@@ -76,7 +76,7 @@ export const GetTopValidatorsTool: McpTool = {
     name: "aptos_get_top_validators",
     description: "Get top validators ranked by various criteria (voting power, APY, success rate, etc.)",
     schema: {
-        limit: z.number().optional().default(20).describe("Number of top validators to return"),
+        limit: z.number().optional().default(5).describe("Number of top validators to return"),
         sortBy: z.enum(['voting_power', 'apy', 'success_rate', 'total_stake'])
             .optional().default('voting_power')
             .describe("Criteria to sort validators by")
@@ -102,7 +102,7 @@ export const GetValidatorsForStakingTool: McpTool = {
     name: "aptos_get_validators_for_staking",
     description: "Get the best validators optimized for delegated staking with operator names and commission rates",
     schema: {
-        limit: z.number().optional().default(20).describe("Number of validators to return")
+        limit: z.number().optional().default(5).describe("Number of validators to return")
     },
     handler: async (agent: AptosAgent, input: Record<string, any>) => {
         try {
